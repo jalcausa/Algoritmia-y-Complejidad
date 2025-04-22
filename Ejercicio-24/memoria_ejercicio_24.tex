@@ -1,0 +1,95 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{geometry}
+\usepackage{lmodern} % Soluciona problemas de fuentes
+
+
+% Definir los entornos para teoremas
+\newtheorem{theorem}{Teorema}
+
+\geometry{left=3cm, right=3cm, top=3cm, bottom=3cm}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Ejercicio_24},
+    pdfpagemode=FullScreen,
+}
+
+\begin{document}
+
+% Portada
+\begin{titlepage}
+    \pagenumbering{gobble} % Desactiva numeración en la portada
+    \centering
+    \vspace*{\fill} % Añade espacio flexible al inicio
+    {\Huge \bfseries Algoritmia y Complejidad\par}
+    \vspace{1cm}
+	{\huge Ejercicio 24 de Sipser\par}
+	\vspace{1cm}
+    {\Large Juan Carlos Alcausa Luque \par}
+    \vspace{1cm}
+    % Elimina o reemplaza esta línea si no tienes la imagen
+    % \includegraphics[width=0.5\textwidth]{ejemplo_imagen.jpg} 
+    \vspace*{\fill} % Añade espacio flexible al final
+    {\large Universidad de Málaga \par}
+\end{titlepage}
+\pagenumbering{arabic} % Reinicia numeración después de la portada
+
+
+% Índice
+\tableofcontents
+\newpage
+
+
+% Introducción
+\section{Enunciado}
+Una 2cnf-fórmula es un $AND$ de cláusulas, donde cada cláusula es un $OR$ de a lo sumo dos literales. Dado $2SAT = \{\langle \phi \rangle \mid \text{ } \phi \text{ es una 2cnf-fórmula} \}$ se pide demostrar que $2SAT \in P$.
+
+\section{Satisfacibilidad de 2-CNF}
+
+La cláusula $(x \lor y)$ es lógicamente equivalente a cada una de las expresiones $(\neg x \rightarrow y)$ y $(\neg y \rightarrow x)$. Representamos la fórmula 2-CNF $\phi$ sobre las variables $x_1, \ldots, x_m$ mediante un grafo dirigido $G$ con $2m$ nodos etiquetados con los literales sobre estas variables. Para cada cláusula en $\phi$, colocamos dos aristas en el grafo correspondientes a las dos implicaciones mencionadas. Adicionalmente, colocamos una arista de $\neg x$ a $x$ si $(x)$ es una cláusula unitaria y la arista inversa si $(\neg x)$ es una cláusula.
+
+\begin{theorem}
+$\phi$ es satisfacible si y solo si $G$ no contiene un ciclo que contenga tanto $x_i$ como $\neg x_i$ para algún $i$. 
+\end{theorem}
+
+Llamaremos a tal ciclo un \textit{ciclo de inconsistencia}. Verificar si $G$ contiene un ciclo de inconsistencia se puede realizar fácilmente en tiempo polinómico con un algoritmo de marcado, o un algoritmo de búsqueda en profundidad.
+
+\begin{proof}
+
+Demostramos que $G$ contiene un ciclo de inconsistencia si y solo si no existe una asignación satisfactoria. 
+
+Comenzamos suponiendo, por reducción al absurdo, que $G$ contiene un ciclo de inconsistencia. Como la secuencia de implicaciones en cualquier ciclo de inconsistencia produce la equivalencia lógica $x_i \leftrightarrow \neg x_i$ para algún $i$, llegamos a contradicción y por tanto, si $G$ contiene un ciclo de inconsistencia, $\phi$ debe ser insatisfacible.
+
+A continuación, demostramos el recíproco. Escribimos $x \stackrel{*}{\rightarrow} y$ si $G$ contiene un camino del nodo $x$ al nodo $y$. Debido a que $G$ contiene las dos aristas designadas para cada cláusula en $\phi$, tenemos $x \stackrel{*}{\rightarrow} y$ si y solo si $\neg y \stackrel{*}{\rightarrow} \neg x$.
+
+Si $G$ no contiene un ciclo de inconsistencia, construimos una asignación satisfactoria para $\phi$ de la siguiente manera:
+
+\begin{enumerate}
+    \item Escogemos cualquier variable $x_i$. No podemos tener tanto $x_i \stackrel{*}{\rightarrow} \neg x_i$ como $\neg x_i \stackrel{*}{\rightarrow} x_i$ porque $G$ no contiene un ciclo de inconsistencia.
+    
+    \item Seleccionamos el literal $x_i$ si $x_i \stackrel{*}{\rightarrow} \neg x_i$ es falso, y en otro caso seleccionamos $\neg x_i$.
+    
+    \item Asignamos el literal seleccionado y todos los literales implicados (aquellos alcanzables a lo largo de caminos desde el nodo seleccionado) como Verdadero.
+    
+    \item Nótese que nunca asignamos tanto $x_j$ como $\neg x_j$ a Verdadero porque si $x_i \stackrel{*}{\rightarrow} x_j$ y $x_i \stackrel{*}{\rightarrow} \neg x_j$ entonces $\neg x_j \stackrel{*}{\rightarrow} \neg x_i$ y por lo tanto $x_i \stackrel{*}{\rightarrow} \neg x_i$, y no habríamos seleccionado el literal $x_i$ (similarmente para $\neg x_i$).
+    
+    \item Luego, eliminamos todos los nodos etiquetados con literales asignados o sus complementos de $G$, y repetimos este procedimiento hasta que todas las variables sean asignadas.
+\end{enumerate}
+
+La asignación resultante satisface cada implicación y por lo tanto cada cláusula en $\phi$. Así, $\phi$ es satisfacible.
+
+\end{proof}
+
+\section{Conclusión}
+
+Este algoritmo permite verificar la satisfacibilidad de cualquier fórmula 2-CNF en tiempo polinómico, transformando el problema en la detección de ciclos de inconsistencia en un grafo dirigido. La implementación práctica puede realizarse mediante algoritmos estándar de búsqueda en grafos.
+
+\end{document}
