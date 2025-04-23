@@ -1,0 +1,304 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{tikz}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+\usetikzlibrary{arrows,shapes,positioning}
+
+\uselanguage{spanish}
+\languagepath{spanish}
+\deftranslation[to=spanish]{Theorem}{Teorema}
+\deftranslation[to=spanish]{theorem}{teorema}
+\deftranslation[to=spanish]{Proof}{Demostración}
+\deftranslation[to=spanish]{Corollary}{Corolario}
+\deftranslation[to=spanish]{Definition}{Definición}
+\deftranslation[to=spanish]{Example}{Ejemplo}
+\deftranslation[to=spanish]{Lemma}{Lema}
+
+\definecolor{sccred}{RGB}{255,180,180}
+\definecolor{sccblue}{RGB}{180,180,255}
+\definecolor{sccgreen}{RGB}{180,255,180}
+
+% Modificar el pie de página para mostrar solo el número de página
+\setbeamertemplate{footline}{%
+  \hfill\usebeamercolor[fg]{page number in head/foot}%
+  \usebeamertemplate{page number in head/foot}\hspace*{2ex}\vskip2pt%
+}
+\setbeamertemplate{page number in head/foot}[framenumber]
+
+\title{$2SAT \in P$}
+\subtitle{Ejercicio 27 de Sipser}
+\author{Juan Carlos Alcausa Luque}
+\institute{Universidad de Málaga}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Contenido}
+\tableofcontents
+\end{frame}
+
+\section{Introducción}
+\begin{frame}{Problema 2SAT}
+\begin{block}{Definición}
+Una \alert{2cnf-fórmula} es un $AND$ de cláusulas, donde cada cláusula es un $OR$ de \alert{a lo sumo dos literales}.
+\end{block}
+
+\begin{block}{Problema}
+$2SAT = \{\langle \phi \rangle \mid \phi \text{ es una 2cnf-fórmula} \}$
+
+\vspace{0.3cm}
+¿Es $2SAT \in P$? Es decir, ¿existe un algoritmo polinómico para decidir si una 2cnf-fórmula es satisfacible?
+\end{block}
+\end{frame}
+
+\begin{frame}{Ejemplos de Fórmulas 2-CNF}
+	\begin{block}{Fórmula 1}
+	$\phi_1 = (x_1 \lor x_2) \land (x_2 \lor x_3) \land (\neg x_1 \lor \neg x_3)$
+	\end{block}
+	
+	\begin{block}{Fórmula 2}
+	$\phi_2 = (x \lor y) \land (y \lor z) \land (\neg x \lor \neg z)$
+	\end{block}
+	
+	\begin{block}{Fórmula 3}
+	$\phi_3 = (x_1 \lor x_2) \land (\neg x_1 \lor x_2) \land (x_1 \lor \neg x_2) \land (\neg x_1 \lor \neg x_2)$
+	\end{block}
+\end{frame}
+
+\section{Grafo de Implicaciones}
+\begin{frame}{Transformación a Grafo}
+\begin{block}{Equivalencias Lógicas}
+Para cualquier cláusula $(a \lor b)$:
+\begin{itemize}
+\item $(a \lor b) \equiv (\neg a \rightarrow b)$
+\item $(a \lor b) \equiv (\neg b \rightarrow a)$
+\end{itemize}
+\end{block}
+
+\begin{block}{Construcción del Grafo}
+\begin{itemize}
+\item Por cada variable $x_i$, creamos dos nodos: $x_i$ y $\neg x_i$
+\item Por cada cláusula $(a \lor b)$, añadimos dos aristas dirigidas:
+    \begin{itemize}
+    \item $\neg a \rightarrow b$
+    \item $\neg b \rightarrow a$
+    \end{itemize}
+\item Para cláusulas unitarias $(a)$, añadimos $\neg a \rightarrow a$
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{}
+\begin{theorem}
+Una fórmula 2-CNF $\phi$ es satisfacible si y solo si no existe ninguna variable $x_i$ tal que $x_i$ y $\neg x_i$ estén en la misma componente fuertemente conexa (SCC) del grafo de implicaciones.
+\end{theorem}
+
+\begin{block}{Intuición}
+\begin{itemize}
+\item Si $x_i$ y $\neg x_i$ están en la misma SCC, entonces $x_i \Rightarrow \neg x_i$ y $\neg x_i \Rightarrow x_i$
+\item Esto crea una contradicción lógica: no existe ninguna asignación válida
+\item Un \alert{ciclo de inconsistencia} es un ciclo que contiene tanto $x_i$ como $\neg x_i$
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Ejemplo: Fórmula No Satisfacible}
+\begin{columns}
+\column{0.38\textwidth}
+Consideremos:
+\vspace{-0.2cm}
+$$\phi_3 = \begin{array}{l}
+(x \lor y) \land \\
+(\neg x \lor y) \land \\
+(x \lor \neg y) \land \\
+(\neg x \lor \neg y)
+\end{array}$$
+
+\vspace{0.2cm}
+Transformando a implicaciones:
+\vspace{-0.2cm}
+\begin{itemize}
+\item $(\neg x \rightarrow y)$, $(\neg y \rightarrow x)$
+\item $(x \rightarrow y)$, $(\neg y \rightarrow \neg x)$
+\item $(\neg x \rightarrow \neg y)$, $(y \rightarrow x)$
+\item $(x \rightarrow \neg y)$, $(y \rightarrow \neg x)$
+\end{itemize}
+
+\column{0.56\textwidth}
+\vspace{-1.0cm}
+\begin{tikzpicture}[scale=0.6, every node/.style={circle, draw, minimum size=15pt, inner sep=0pt}]
+% Nodes
+\node[fill=sccred] (x) at (0,1.5) {$x$};
+\node[fill=sccred] (nx) at (3.5,1.5) {$\neg x$};
+\node[fill=sccred] (y) at (0,-1.5) {$y$};
+\node[fill=sccred] (ny) at (3.5,-1.5) {$\neg y$};
+
+% Edges
+\draw[-latex] (nx) -- (y);
+\draw[-latex] (ny) -- (x);
+\draw[-latex] (x) -- (y);
+\draw[-latex] (ny) -- (nx);
+\draw[-latex] (nx) -- (ny);
+\draw[-latex] (y) -- (x);
+\draw[-latex] (x) -- (ny);
+\draw[-latex] (y) -- (nx);
+\end{tikzpicture}
+
+\vspace{1.3cm}
+\begin{alertblock}{Resultado}
+¡Todos los nodos están en la misma SCC!
+
+Contradicción: $\phi_3$ no es satisfacible.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo: Fórmula Satisfacible}
+\begin{columns}
+\column{0.43\textwidth}
+Consideremos:
+\vspace{-0.2cm}
+$$\phi_2 = \begin{array}{l}
+(x \lor y) \land \\
+(y \lor z) \land \\
+(\neg x \lor \neg z)
+\end{array}$$
+
+\vspace{0.2cm}
+Transformando a implicaciones:
+\vspace{-0.2cm}
+\begin{itemize}
+\item $(\neg x \rightarrow y)$, $(\neg y \rightarrow x)$
+\item $(\neg y \rightarrow z)$, $(\neg z \rightarrow y)$
+\item $(x \rightarrow \neg z)$, $(z \rightarrow \neg x)$
+\end{itemize}
+
+\column{0.53\textwidth}
+\vspace{-0.3cm}
+\begin{tikzpicture}[scale=0.6, every node/.style={circle, draw, minimum size=15pt, inner sep=0pt}]
+% Nodes - mantenemos la separación vertical
+\node (x) at (0,2.5) {$x$};
+\node (nx) at (4.0,2.5) {$\neg x$};
+\node (y) at (0,0.0) {$y$};
+\node (ny) at (4.0,0.0) {$\neg y$};
+\node (z) at (0,-2.5) {$z$};
+\node (nz) at (4.0,-2.5) {$\neg z$};
+
+% Las 6 aristas originales (sin colorear nodos por ahora)
+\draw[-latex] (nx) -- (y);
+\draw[-latex] (ny) -- (x);
+\draw[-latex] (ny) -- (z);
+\draw[-latex] (nz) -- (y);
+\draw[-latex] (x) -- (nz);
+\draw[-latex] (z) -- (nx);
+\end{tikzpicture}
+\vspace{-0.5cm}
+\end{columns}
+
+\begin{block}{Análisis correcto}
+Este grafo no tiene SCCs grandes, solo SCCs triviales (nodos individuales).
+No hay ciclos que contengan tanto una variable como su negación.
+
+Por tanto, la fórmula $\phi_2$ es satisfacible. Una asignación válida es: $x=1, y=1, z=0$.
+\end{block}
+\end{frame}
+
+\section{Algoritmo y Demostración}
+\begin{frame}{Demostración Formal}
+\begin{block}{Teorema}
+$\phi$ es satisfacible si y solo si no hay un ciclo de inconsistencia en su grafo de implicaciones.
+\end{block}
+
+\begin{proof}[Idea de la Demostración]
+\begin{itemize}
+\item \alert{($\Rightarrow$)} Si existe un ciclo de inconsistencia, entonces $x_i \Rightarrow \neg x_i$ y $\neg x_i \Rightarrow x_i$ para algún $i$. Esto crea la equivalencia lógica $x_i \leftrightarrow \neg x_i$, que es una contradicción.
+
+\item \alert{($\Leftarrow$)} Si no existe ciclo de inconsistencia, podemos construir una asignación satisfactoria: elegimos una variable no asignada $x_i$, le asignamos un valor (y a todos sus implicados), eliminamos esos nodos y repetimos hasta asignar todas las variables.
+\end{itemize}
+\end{proof}
+\end{frame}
+
+\begin{frame}{Algoritmo para 2SAT}
+\begin{algorithm}[H]
+\caption{2SAT (vars, cláusulas)}
+\begin{algorithmic}[1]
+\State grafo $\gets$ construir\_grafo\_de\_implicación(vars, cláusulas)
+\State mapa\_scc $\gets$ encontrar\_SCCs(grafo)
+\For{cada $x \in$ vars}
+    \If{mapa\_scc[x] = mapa\_scc[-x]}
+        \State \Return falso
+    \EndIf
+\EndFor
+\State \Return verdadero
+\end{algorithmic}
+\end{algorithm}
+
+\begin{block}{Explicación}
+\begin{itemize}
+\item Construimos el grafo de implicación
+\item Encontramos todas las componentes fuertemente conexas (SCCs)
+\item Verificamos que ninguna variable y su negación estén en la misma SCC
+\end{itemize}
+\end{block}
+\end{frame}
+
+\section{Análisis de Complejidad}
+\begin{frame}{Complejidad Temporal}
+\begin{equation*}
+T(V, E) = |V| + |E| + \frac{|V|}{2} * 2 = O(|V| + |E|)
+\end{equation*}
+
+\begin{enumerate}
+\item \textbf{Encontrar las SCCs}: $|V| + |E|$
+   \begin{itemize}
+   \item Usando el algoritmo de Kosaraju
+   \item \alert{Esta es la parte dominante de la complejidad}
+   \end{itemize}
+   
+\item \textbf{Verificación de contradicciones}: $O(|V|)$
+   \begin{itemize}
+   \item $\frac{|V|}{2}$ comparaciones de identificadores de SCCs
+   \end{itemize}
+\end{enumerate}
+
+\begin{block}{Conclusión}
+El algoritmo tiene complejidad temporal $O(|V| + |E|)$, que es polinómica.
+
+Por tanto, \alert{$2SAT \in P$}
+\end{block}
+\end{frame}
+
+\begin{frame}{Implicaciones Prácticas}
+\begin{block}{Aplicaciones de 2SAT}
+\begin{itemize}
+\item \textbf{Programación lógica}: Resolución eficiente de restricciones binarias
+\item \textbf{Planificación}: Problemas con restricciones mutuamente exclusivas
+\item \textbf{Verificación de hardware}: Circuitos con restricciones de dos literales
+\item \textbf{Toma de decisiones}: Problemas con opciones binarias y restricciones sencillas
+\end{itemize}
+\end{block}
+\end{frame}
+
+
+\begin{frame}{Conclusiones}
+\begin{itemize}
+\item 2SAT es un problema de satisfacibilidad resoluble en tiempo polinómico, lo que implica que $2SAT \in P$
+\item La clave del enfoque es la transformación del problema a un grafo de implicaciones
+\item La verificación de satisfacibilidad se reduce a comprobar la ausencia de ciclos de inconsistencia
+\item El algoritmo tiene una complejidad temporal de $O(|V| + |E|)$
+\end{itemize}
+
+\end{frame}
+
+\end{document}

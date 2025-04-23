@@ -6,6 +6,12 @@
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage{geometry}
 \usepackage{lmodern} % Soluciona problemas de fuentes
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+\usetikzlibrary{arrows}
 
 
 % Definir los entornos para teoremas
@@ -60,7 +66,7 @@ La cláusula $(x \lor y)$ es lógicamente equivalente a cada una de las expresio
 $\phi$ es satisfacible si y solo si $G$ no contiene un ciclo que contenga tanto $x_i$ como $\neg x_i$ para algún $i$. 
 \end{theorem}
 
-Llamaremos a tal ciclo un \textit{ciclo de inconsistencia}. Verificar si $G$ contiene un ciclo de inconsistencia se puede realizar fácilmente en tiempo polinómico con un algoritmo de marcado, o un algoritmo de búsqueda en profundidad.
+Llamaremos a tal ciclo un \textit{ciclo de inconsistencia}. Verificar si $G$ contiene un ciclo de inconsistencia se puede realizar fácilmente en tiempo polinómico aplicando el algoritmo de Kosaraju y comprobando que cada variable y su complementaria no pertenecen a la misma SCC (\textit{Componente Fuertemente Conectada}).
 
 \begin{proof}
 
@@ -88,8 +94,164 @@ La asignación resultante satisface cada implicación y por lo tanto cada cláus
 
 \end{proof}
 
+\section{Algoritmo de Kosaraju}
+
+El algoritmo de Kosaraju permite encontrar las \textbf{componentes fuertemente conexas (SCC)} de un grafo dirigido $G = (V, E)$. Una componente fuertemente conexa es un conjunto de vértices tal que para cualquier par de vértices $u$ y $v$ dentro del conjunto, existe un camino de $u$ a $v$ y de $v$ a $u$.
+
+\subsection*{Descripción del algoritmo de Kosaraju}
+
+El algoritmo de Kosaraju permite encontrar las componentes fuertemente conexas (SCCs) de un grafo dirigido en tiempo polinómico. Su funcionamiento se basa en dos recorridos en profundidad (DFS), con un paso intermedio en el que se invierten todas las aristas del grafo. A continuación, se describen los pasos:
+
+\begin{enumerate}
+    \item \textbf{Primera búsqueda en profundidad (DFS)}: Se realiza un recorrido en profundidad sobre el grafo original. A medida que se completan las llamadas recursivas de cada nodo, se almacenan los nodos en una pila (o lista) en el orden en que finaliza su recorrido. Este orden representa un \textit{orden de salida} o \textit{postorden inverso} del grafo.
+    
+    \item \textbf{Inversión de aristas (grafo transpuesto)}: Se construye el grafo transpuesto $G^T$, es decir, se invierte la dirección de todas las aristas del grafo original. Si había una arista de $u$ a $v$, ahora habrá una arista de $v$ a $u$.
+    
+    \item \textbf{Segunda búsqueda en profundidad (DFS en el grafo transpuesto)}: Se procesan los nodos en el orden de salida obtenido en el primer DFS (es decir, desde el último finalizado hasta el primero), realizando una nueva búsqueda en profundidad en el grafo transpuesto. Cada DFS completo en este paso identifica una componente fuertemente conexa del grafo original.
+\end{enumerate}
+
+El algoritmo es eficiente ya que cada paso tiene una complejidad lineal respecto al número de vértices y aristas, es decir, $\mathcal{O}(V + E)$.
+
+
+\subsection*{Ejemplo}
+Consideremos el siguiente grafo dirigido $G$ con 8 vértices:
+
+\begin{center}
+\begin{tikzpicture}
+% Definición de estilos simplificados
+\tikzset{
+  myvertex/.style={circle, draw, minimum size=20pt}
+}
+
+% Nodos
+\node[myvertex] (1) at (0, 0) {1};
+\node[myvertex] (2) at (2, 1) {2};
+\node[myvertex] (3) at (4, 0) {3};
+\node[myvertex] (4) at (0, -2) {4};
+\node[myvertex] (5) at (2, -3) {5};
+\node[myvertex] (6) at (4, -2) {6};
+\node[myvertex] (7) at (6, 1) {7};
+\node[myvertex] (8) at (6, -1) {8};
+
+% Aristas
+\draw[-latex] (1) -- (2);
+\draw[-latex] (2) -- (3);
+\draw[-latex] (3) -- (7);
+\draw[-latex] (7) -- (8);
+\draw[-latex] (8) -- (3);
+
+\draw[-latex] (3) -- (6);
+
+\draw[-latex] (6) -- (5);
+\draw[-latex] (5) -- (4);
+\draw[-latex] (4) -- (1);
+\draw[-latex] (1) -- (6);
+\end{tikzpicture}
+\end{center}
+
+\vspace{1cm}
+
+Observamos que en este grafo:
+\begin{itemize}
+\item Los nodos 1, 4, 5 y 6 forman un ciclo: 1 → 6 → 5 → 4 → 1
+\item El nodo 2 está aislado en términos de ciclos
+\item Los nodos 3, 7 y 8 forman otro ciclo: 3 → 7 → 8 → 3
+\end{itemize}
+
+\subsubsection*{Componentes Fuertemente Conexas}
+
+Tras aplicar el algoritmo de Kosaraju, las componentes fuertemente conexas identificadas son:
+
+\begin{center}
+\begin{tikzpicture}
+% Definición de estilos simplificados
+\tikzset{
+  myvertex/.style={circle, draw, minimum size=20pt},
+  comp1/.style={circle, draw, fill=red!20, minimum size=20pt},
+  comp2/.style={circle, draw, fill=blue!20, minimum size=20pt},
+  comp3/.style={circle, draw, fill=green!20, minimum size=20pt}
+}
+
+% Nodos con colores según componente
+\node[comp1] (1) at (0, 0) {1};
+\node[comp2] (2) at (2, 1) {2};
+\node[comp3] (3) at (4, 0) {3};
+\node[comp1] (4) at (0, -2) {4};
+\node[comp1] (5) at (2, -3) {5};
+\node[comp1] (6) at (4, -2) {6};
+\node[comp3] (7) at (6, 1) {7};
+\node[comp3] (8) at (6, -1) {8};
+
+% Aristas CORREGIDAS con sintaxis básica
+\draw[-latex] (1) -- (2);
+\draw[-latex] (2) -- (3);
+\draw[-latex] (3) -- (7);
+\draw[-latex] (7) -- (8);
+\draw[-latex] (8) -- (3);
+
+\draw[-latex] (3) -- (6);
+
+\draw[-latex] (6) -- (5);
+\draw[-latex] (5) -- (4);
+\draw[-latex] (4) -- (1);
+\draw[-latex] (1) -- (6); % Arista que cierra el ciclo en la componente roja
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+
+\textbf{Componentes identificadas:}
+\begin{itemize}
+\item \textbf{SCC$_1$} = \{1, 4, 5, 6\} (rojo): Forma un ciclo completo
+\item \textbf{SCC$_2$} = \{2\} (azul): Nodo aislado en términos de ciclos
+\item \textbf{SCC$_3$} = \{3, 7, 8\} (verde): Forma otro ciclo completo
+\end{itemize}
+
+\section{Algoritmo para 2SAT}
+
+\begin{algorithm}[H]
+	\caption{2SAT (vars, cláusulas)}
+	\begin{algorithmic}[1]
+	\State grafo $\gets$ construir\_grafo\_de\_implicación(vars, cláusulas)
+	\State mapa\_scc $\gets$ encontrar\_SCCs(grafo)
+	\For{cada $x \in$ vars}
+		\If{mapa\_scc[x] = mapa\_scc[-x]}
+			\State \Return falso
+		\EndIf
+	\EndFor
+	\State \Return verdadero
+	\end{algorithmic}
+	\end{algorithm}
+
+\subsection*{Complejidad temporal}
+
+\begin{equation*}
+	T(V, E) = |V| + |E| + \frac{|V|}{2} * 2 = O(|V| + |E|)
+\end{equation*}
+
+Esta complejidad se justifica analizando cada paso del algoritmo:
+
+\begin{enumerate}
+    \item \textbf{Encontrar las componentes fuertemente conexas}: $O(|V| + |E|)$
+    \begin{itemize}
+        \item La función \texttt{encontrar\_SCCs(grafo)} implementa el algoritmo de Kosaraju
+        \item Este algoritmo tiene una complejidad temporal de $O(|V| + |E|)$, donde $|V|$ es el número de vértices y $|E|$ es el número de aristas
+        \item \textbf{Esta es la parte dominante de la complejidad total}
+    \end{itemize}
+    
+    \item \textbf{Verificación de contradicciones}: $\frac{|V|}{2} * 2$
+    \begin{itemize}
+        \item El bucle \texttt{for} itera sobre cada variable, habiendo $\frac{|V|}{2}$ variables
+        \item La comprobación de si una variable y su negación están en la misma SCC es una operación de tiempo constante (2 para cada iteración)
+    \end{itemize}
+\end{enumerate}
+
+El término $O(|V| + |E|)$ del algoritmo para encontrar componentes fuertemente conexas es el que domina la complejidad total, ya que engloba a los demás términos.
+
+Por tanto, la complejidad total del algoritmo 2SAT es $O(|V| + |E|)$, es decir, toma tiempo polinómico y podemos asegurar que $2SAT \in P$.
+
 \section{Conclusión}
 
-Este algoritmo permite verificar la satisfacibilidad de cualquier fórmula 2-CNF en tiempo polinómico, transformando el problema en la detección de ciclos de inconsistencia en un grafo dirigido. La implementación práctica puede realizarse mediante algoritmos estándar de búsqueda en grafos.
+Este algoritmo permite verificar la satisfacibilidad de cualquier fórmula 2-CNF en tiempo polinómico, transformando el problema en la detección de ciclos de inconsistencia en un grafo dirigido.
 
 \end{document}
