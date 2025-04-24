@@ -226,12 +226,13 @@ Tras aplicar el algoritmo de Kosaraju, las componentes fuertemente conexas ident
 \subsection*{Complejidad temporal}
 
 \begin{equation*}
-	T(V, E) = |V| + |E| + \frac{|V|}{2} * 2 = O(|V| + |E|)
+	T(V, E) = O(|V| + |E| +|V| + |E| + \frac{|V|}{2} * 2) = O(|V| + |E|)
 \end{equation*}
 
 Esta complejidad se justifica analizando cada paso del algoritmo:
 
 \begin{enumerate}
+	\item \textbf{Construcción del grafo de implicación}: $|V| + |E|$
     \item \textbf{Encontrar las componentes fuertemente conexas}: $O(|V| + |E|)$
     \begin{itemize}
         \item La función \texttt{encontrar\_SCCs(grafo)} implementa el algoritmo de Kosaraju
@@ -242,13 +243,13 @@ Esta complejidad se justifica analizando cada paso del algoritmo:
     \item \textbf{Verificación de contradicciones}: $\frac{|V|}{2} * 2$
     \begin{itemize}
         \item El bucle \texttt{for} itera sobre cada variable, habiendo $\frac{|V|}{2}$ variables
-        \item La comprobación de si una variable y su negación están en la misma SCC es una operación de tiempo constante (2 para cada iteración)
+        \item La comprobación de si una variable y su negación están en la misma SCC es una operación de tiempo constante (2 para cada iteración). Simplemente consultamos a qué SCC pertenece cada nodo y verificar si coinciden gracias al mapa que nos devuelve el algoritmo.
     \end{itemize}
 \end{enumerate}
 
 El término $O(|V| + |E|)$ del algoritmo para encontrar componentes fuertemente conexas es el que domina la complejidad total, ya que engloba a los demás términos.
 
-Por tanto, la complejidad total del algoritmo 2SAT es $O(|V| + |E|)$, es decir, toma tiempo polinómico y podemos asegurar que $2SAT \in P$.
+Por tanto, la complejidad total del algoritmo 2SAT es $O(|V| + |E|)$, expresado en término de las variables y cláusulas de 2SAT nos quedaría $O(|n| + |m|)$, ya que $|V| = 2n$ y $|E| = 2m$, donde n es el número de variables y m el número de cláusulas. Es decir, toma tiempo polinómico y podemos asegurar que $2SAT \in P$.
 
 \section{Conclusión}
 

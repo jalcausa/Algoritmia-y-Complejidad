@@ -104,7 +104,7 @@ Para cualquier cláusula $(a \lor b)$:
 Una fórmula 2-CNF $\phi$ es satisfacible si y solo si no existe ninguna variable $x_i$ tal que $x_i$ y $\neg x_i$ estén en la misma componente fuertemente conexa (SCC) del grafo de implicaciones.
 \end{theorem}
 
-\begin{block}{Intuición}
+\begin{block}{Idea}
 \begin{itemize}
 \item Si $x_i$ y $\neg x_i$ están en la misma SCC, entonces $x_i \Rightarrow \neg x_i$ y $\neg x_i \Rightarrow x_i$
 \item Esto crea una contradicción lógica: no existe ninguna asignación válida
@@ -220,7 +220,7 @@ Por tanto, la fórmula $\phi_2$ es satisfacible. Una asignación válida es: $x=
 $\phi$ es satisfacible si y solo si no hay un ciclo de inconsistencia en su grafo de implicaciones.
 \end{block}
 
-\begin{proof}[Idea de la Demostración]
+\begin{proof}[Demostración]
 \begin{itemize}
 \item \alert{($\Rightarrow$)} Si existe un ciclo de inconsistencia, entonces $x_i \Rightarrow \neg x_i$ y $\neg x_i \Rightarrow x_i$ para algún $i$. Esto crea la equivalencia lógica $x_i \leftrightarrow \neg x_i$, que es una contradicción.
 
@@ -256,24 +256,28 @@ $\phi$ es satisfacible si y solo si no hay un ciclo de inconsistencia en su graf
 \section{Análisis de Complejidad}
 \begin{frame}{Complejidad Temporal}
 \begin{equation*}
-T(V, E) = |V| + |E| + \frac{|V|}{2} * 2 = O(|V| + |E|)
+T(V, E) = O(|V| + |E| + |V| + |E| + \frac{|V|}{2} * 2) = O(|V| + |E|)
 \end{equation*}
 
 \begin{enumerate}
-\item \textbf{Encontrar las SCCs}: $|V| + |E|$
+\item \textbf{Construcción del grafo de implicación}: $|V| + |E|$
+
+\item \textbf{Encontrar las componentes fuertemente conexas}: $O(|V| + |E|)$
    \begin{itemize}
-   \item Usando el algoritmo de Kosaraju
-   \item \alert{Esta es la parte dominante de la complejidad}
+   \item La función \texttt{encontrar\_SCCs(grafo)} implementa el algoritmo de Kosaraju
+   \item Este algoritmo tiene una complejidad temporal de $O(|V| + |E|)$
+   \item \alert{Esta es la parte dominante de la complejidad total}
    \end{itemize}
    
-\item \textbf{Verificación de contradicciones}: $O(|V|)$
+\item \textbf{Verificación de contradicciones}: $|V|$
    \begin{itemize}
-   \item $\frac{|V|}{2}$ comparaciones de identificadores de SCCs
+	\item El bucle \texttt{for} itera sobre cada variable, habiendo $\frac{|V|}{2}$ variables
+	\item La comprobación de si una variable y su negación están en la misma SCC es una operación de tiempo constante (2 para cada iteración) gracias al mapa que devuelve el algoritmo.
    \end{itemize}
 \end{enumerate}
 
 \begin{block}{Conclusión}
-El algoritmo tiene complejidad temporal $O(|V| + |E|)$, que es polinómica.
+El algoritmo tiene complejidad temporal $O(|V| + |E|)$, que expresado en términos de variables y cláusulas es $O(n + m)$.
 
 Por tanto, \alert{$2SAT \in P$}
 \end{block}
