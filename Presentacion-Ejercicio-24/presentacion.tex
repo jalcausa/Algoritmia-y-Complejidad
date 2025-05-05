@@ -33,7 +33,7 @@
 \setbeamertemplate{page number in head/foot}[framenumber]
 
 \title{$2SAT \in P$}
-\subtitle{Ejercicio 27 de Sipser}
+\subtitle{Ejercicio 24 de Sipser}
 \author{Juan Carlos Alcausa Luque}
 \institute{Universidad de Málaga}
 \date{}
@@ -55,7 +55,7 @@ Una \alert{2cnf-fórmula} es un $AND$ de cláusulas, donde cada cláusula es un 
 \end{block}
 
 \begin{block}{Problema}
-$2SAT = \{\langle \phi \rangle \mid \phi \text{ es una 2cnf-fórmula} \}$
+$2SAT = \{\langle \phi \rangle \mid \phi \text{ es una 2cnf-fórmula satisfacible} \}$
 
 \vspace{0.3cm}
 ¿Es $2SAT \in P$? Es decir, ¿existe un algoritmo polinómico para decidir si una 2cnf-fórmula es satisfacible?
@@ -206,7 +206,7 @@ Transformando a implicaciones:
 \vspace{-0.5cm}
 \end{columns}
 
-\begin{block}{Análisis correcto}
+\begin{block}{Resultado}
 Este grafo no tiene SCCs grandes, solo SCCs triviales (nodos individuales).
 No hay ciclos que contengan tanto una variable como su negación.
 
@@ -215,7 +215,7 @@ Por tanto, la fórmula $\phi_2$ es satisfacible. Una asignación válida es: $x=
 \end{frame}
 
 \section{Algoritmo y Demostración}
-\begin{frame}{Demostración Formal}
+\begin{frame}{}
 \begin{block}{Teorema}
 $\phi$ es satisfacible si y solo si no hay un ciclo de inconsistencia en su grafo de implicaciones.
 \end{block}
@@ -264,15 +264,14 @@ T(V, E) = O(|V| + |E| + |V| + |E| + \frac{|V|}{2} * 2) = O(|V| + |E|)
 
 \item \textbf{Encontrar las componentes fuertemente conexas}: $O(|V| + |E|)$
    \begin{itemize}
-   \item La función \texttt{encontrar\_SCCs(grafo)} implementa el algoritmo de Kosaraju
-   \item Este algoritmo tiene una complejidad temporal de $O(|V| + |E|)$
+   \item La función \texttt{encontrar\_SCCs(grafo)} implementa el algoritmo de Kosaraju que tiene una complejidad temporal de $O(|V| + |E|)$
    \item \alert{Esta es la parte dominante de la complejidad total}
    \end{itemize}
    
 \item \textbf{Verificación de contradicciones}: $|V|$
    \begin{itemize}
 	\item El bucle \texttt{for} itera sobre cada variable, habiendo $\frac{|V|}{2}$ variables
-	\item La comprobación de si una variable y su negación están en la misma SCC es una operación de tiempo constante (2 para cada iteración) gracias al mapa que devuelve el algoritmo.
+	\item La comprobación de si una variable y su negación están en la misma SCC es una operación de tiempo constante.
    \end{itemize}
 \end{enumerate}
 
@@ -282,18 +281,6 @@ El algoritmo tiene complejidad temporal $O(|V| + |E|)$, que expresado en términ
 Por tanto, \alert{$2SAT \in P$}
 \end{block}
 \end{frame}
-
-\begin{frame}{Implicaciones Prácticas}
-\begin{block}{Aplicaciones de 2SAT}
-\begin{itemize}
-\item \textbf{Programación lógica}: Resolución eficiente de restricciones binarias
-\item \textbf{Planificación}: Problemas con restricciones mutuamente exclusivas
-\item \textbf{Verificación de hardware}: Circuitos con restricciones de dos literales
-\item \textbf{Toma de decisiones}: Problemas con opciones binarias y restricciones sencillas
-\end{itemize}
-\end{block}
-\end{frame}
-
 
 \begin{frame}{Conclusiones}
 \begin{itemize}
