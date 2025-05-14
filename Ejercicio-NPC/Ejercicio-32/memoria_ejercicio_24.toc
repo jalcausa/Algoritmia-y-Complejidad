@@ -4,6 +4,6 @@
 \contentsline {section}{\numberline {3}DOMINATING-SET pertenece a NP}{2}{section.3}%
 \contentsline {section}{\numberline {4}Reducción desde VERTEX-COVER}{2}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Ejemplo de reducción}{3}{subsection.4.1}%
-\contentsline {section}{\numberline {5}Equivalencia entre instancias}{3}{section.5}%
-\contentsline {section}{\numberline {6}Preguntas}{4}{section.6}%
-\contentsline {section}{\numberline {7}Conclusión}{4}{section.7}%
+\contentsline {subsection}{\numberline {4.2}Equivalencia}{3}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Preguntas}{4}{section.5}%
+\contentsline {section}{\numberline {6}Conclusión}{4}{section.6}%
