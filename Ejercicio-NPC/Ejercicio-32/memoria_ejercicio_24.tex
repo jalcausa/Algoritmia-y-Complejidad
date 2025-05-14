@@ -1,0 +1,152 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{geometry}
+\usepackage{lmodern}
+\usepackage{tikz}
+\usepackage{float}
+\usetikzlibrary{arrows}
+
+\newtheorem{theorem}{Teorema}
+\geometry{left=3cm, right=3cm, top=3cm, bottom=3cm}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Ejercicio_32},
+    pdfpagemode=FullScreen,
+}
+
+\begin{document}
+
+% Portada
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \centering
+    \vspace*{\fill}
+    {\Huge \bfseries Algoritmia y Complejidad\par}
+    \vspace{1cm}
+    {\huge Ejercicio 32\par}
+    \vspace{1cm}
+    {\Large Juan Carlos Alcausa Luque \par}
+    \vspace*{\fill}
+    {\large Universidad de Málaga \par}
+\end{titlepage}
+\pagenumbering{arabic}
+
+\tableofcontents
+\newpage
+
+\section{Enunciado}
+Demostrar que el lenguaje:
+\[
+\texttt{DOMINATING-SET} = \{ \langle G, k \rangle \mid G \text{ tiene un conjunto dominante de tamaño } k \}
+\]
+es NP-completo, mediante una reducción desde \texttt{VERTEX-COVER}.
+
+\section{Definición del problema}
+Un conjunto \( D \subseteq V \) es un \textbf{conjunto dominante} de un grafo no dirigido \( G = (V, E) \) si cada vértice \( v \in V \setminus D \) es adyacente a al menos un vértice en \( D \). El problema de decisión \texttt{DOMINATING-SET} consiste en determinar, dado un grafo \( G \) y un entero \( k \), si existe un conjunto dominante \( D \) tal que \( |D| \leq k \).
+
+\section{DOMINATING-SET pertenece a NP}
+El problema \texttt{DOMINATING-SET} pertenece a NP porque es posible verificar una solución candidata en tiempo polinómico. Basta con verificar que todos los vértices no pertenecientes al conjunto \( D \) están conectados a al menos un vértice en \( D \).
+
+\begin{theorem}
+\texttt{DOMINATING-SET} pertenece a NP.
+\end{theorem}
+
+\begin{proof}
+Dado un grafo \( G = (V, E) \), un entero \( k \) y un subconjunto candidato \( D \subseteq V \), se puede verificar si \( D \) es un conjunto dominante en tiempo \( O(n^2) \), donde \( n = |V| \). Para cada vértice \( v \notin D \), se comprueba si existe al menos un vecino en \( D \), lo cual se puede hacer recorriendo la lista de adyacencias o la matriz de adyacencia. Como hay a lo sumo \( n \) vértices y se verifican adyacencias en \( O(n) \), la verificación es polinómica.
+\end{proof}
+
+\section{Reducción desde VERTEX-COVER}
+El problema \texttt{VERTEX-COVER} es NP-completo. Dado un grafo \( G = (V, E) \) y un entero \( k \), pregunta si existe un subconjunto \( C \subseteq V \) de tamaño a lo sumo \( k \) tal que toda arista de \( G \) tiene al menos un extremo en \( C \).
+
+\subsection*{Construcción de la reducción}
+Sea \( G = (V, E) \) una instancia de \texttt{VERTEX-COVER}. Definimos una función de transformación \( f \) que construye un grafo \( G' = (V', E') \) para una instancia equivalente de \texttt{DOMINATING-SET}, tal que:
+\begin{itemize}
+    \item Por cada arista \( e = (u, v) \in E \), añadimos un nuevo vértice \( w_e \) y conectamos \( w_e \) con \( u \) y con \( v \).
+    \item \( V' = V \cup \{ w_e \mid e \in E \} \)
+    \item \( E' = \{ (u, w_e), (v, w_e) \mid e = (u, v) \in E \} \)
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=1.1]
+\tikzstyle{every node}=[draw, circle, minimum size=8mm]
+\node (u) at (0, 1) {$u$};
+\node (v) at (2, 1) {$v$};
+\node (w) at (1, 0) {$w_e$};
+\draw (u) -- (w);
+\draw (v) -- (w);
+\end{tikzpicture}
+\caption{Gadget de la reducción para cada arista \( (u,v) \)}
+\end{figure}
+
+\subsection{Ejemplo de reducción}
+Supongamos que el grafo \( G \) está definido como:
+
+\[
+V = \{1, 2, 3\}, \quad E = \{(1,2), (2,3)\}
+\]
+
+Una posible cobertura de vértices de tamaño 2 sería \( C = \{2,3\} \), ya que cubre ambas aristas.
+
+Transformamos \( G \) en \( G' \) de la siguiente forma:
+
+\[
+V' = \{1,2,3, w_{12}, w_{23} \}
+\]
+\[
+E' = \{(1, w_{12}), (2, w_{12}), (2, w_{23}), (3, w_{23})\}
+\]
+
+Entonces, el conjunto dominante de \( G' \) también puede ser \( \{2,3\} \), ya que domina a \( w_{12} \), \( w_{23} \), y también a \( 1 \), pues está conectado con \( w_{12} \) (que está conectado a \( 1 \)).
+
+\section{Equivalencia entre instancias}
+\subsection*{\( \Rightarrow \)}
+Si \( C \subseteq V \) es un conjunto de cobertura de vértices en \( G \), entonces \( C \) es también un conjunto dominante en \( G' \). Esto es porque:
+\begin{itemize}
+    \item Todos los vértices originales de \( G \) están en \( V' \) y dominados si están en \( C \).
+    \item Los nuevos vértices \( w_e \), añadidos para cada arista \( e = (u, v) \), están conectados a \( u \) y \( v \), al menos uno de los cuales está en \( C \) por definición de cobertura.
+\end{itemize}
+
+\subsection*{\( \Leftarrow \)}
+Si \( D \subseteq V' \) es un conjunto dominante en \( G' \), entonces se puede construir un conjunto de cobertura \( C \subseteq V \) tal que:
+\begin{itemize}
+    \item Si algún vértice añadido \( w_e \) está en \( D \), podemos reemplazarlo por uno de sus vecinos \( u \) o \( v \) en el conjunto dominante sin perder dominancia.
+    \item De este modo, conseguimos un conjunto \( C \subseteq V \) de tamaño a lo sumo \( k \), que cubre todas las aristas de \( G \).
+\end{itemize}
+
+\begin{theorem}
+\texttt{VERTEX-COVER} \( \leq_p \) \texttt{DOMINATING-SET}
+\end{theorem}
+
+\begin{proof}
+La transformación descrita se puede realizar en tiempo polinómico respecto al tamaño de \( G \). Además, como se ha demostrado, \( G \) tiene un \textit{vertex cover} de tamaño \( k \) si y solo si \( G' \) tiene un conjunto dominante de tamaño \( k \).
+\end{proof}
+
+\section{Preguntas}
+
+\begin{itemize}
+    \item ¿Es toda cobertura de vértices un conjunto dominante? \textbf{Sí}, ya que si cada arista está cubierta, entonces los nodos extremos están en el conjunto o son vecinos de nodos en el conjunto.
+    \item ¿Es todo conjunto dominante una cobertura de vértices? \textbf{No necesariamente}. Puede ocurrir que algunos vértices estén dominados por vecinos pero que una arista no tenga ninguno de sus extremos en el conjunto.
+    \item ¿Qué ocurre si el grafo tiene vértices aislados? Estos deben formar parte obligatoriamente del conjunto dominante, ya que no tienen vecinos.
+    \item ¿Puede un conjunto dominante tener menor tamaño que una cobertura de vértices? En general, \textbf{sí}, aunque en el caso construido por la reducción ambos tendrán el mismo tamaño.
+\end{itemize}
+
+\section{Conclusión}
+Hemos demostrado que:
+\begin{itemize}
+    \item \texttt{DOMINATING-SET} pertenece a NP.
+    \item Existe una reducción en tiempo polinómico desde \texttt{VERTEX-COVER} a \texttt{DOMINATING-SET}.
+    \item La reducción conserva la propiedad de solución entre instancias.
+\end{itemize}
+
+\textbf{Por tanto, \texttt{DOMINATING-SET} es NP-completo.}
+
+\end{document}
