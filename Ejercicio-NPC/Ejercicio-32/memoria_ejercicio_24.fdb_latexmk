@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1747241785.67937 "c:/Users/jcalc/Documentos/Carrera/Cuarto/Algoritmia-y-Complejidad/Ejercicio-NPC/Ejercicio-32/memoria_ejercicio_24.tex" "memoria_ejercicio_24.pdf" "memoria_ejercicio_24" 1747241788.07681 0
-  "c:/Users/jcalc/Documentos/Carrera/Cuarto/Algoritmia-y-Complejidad/Ejercicio-NPC/Ejercicio-32/memoria_ejercicio_24.tex" 1747241782 6925 f555808816c92d14a4453262b1d8ad25 ""
+["pdflatex"] 1747380692.62636 "c:/Users/jcalc/Documentos/Carrera/Cuarto/Algoritmia-y-Complejidad/Ejercicio-NPC/Ejercicio-32/memoria_ejercicio_24.tex" "memoria_ejercicio_24.pdf" "memoria_ejercicio_24" 1747380696.16283 0
+  "c:/Users/jcalc/Documentos/Carrera/Cuarto/Algoritmia-y-Complejidad/Ejercicio-NPC/Ejercicio-32/memoria_ejercicio_24.tex" 1747380689 6848 5581f80f0cf5aef5f6c893d28d9c4b6d ""
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc" 1745267814 2405 5dcf2c1b967ee25cc46c58cd52244aed ""
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc" 1745267814 2840 216e6e45ad352e2456e1149f28885bee ""
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc" 1745267814 2327 9d6df24f9c4f7368395224341a95523a ""
@@ -182,10 +182,10 @@
   "c:/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1745271495 5567782 00e0fb0c7cc9c7361a97e3a2230dfbe7 ""
   "c:/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1745271794 3561285 a6f57842532d43c6442c2c3e1a5f601f ""
   "c:/texlive/2025/texmf.cnf" 1745271454 713 e69b156964470283e0530f5060668171 ""
-  "memoria_ejercicio_24.aux" 1747241787 1465 23b2fa847cd4b7df4cba41a6bb7d5dd9 "pdflatex"
-  "memoria_ejercicio_24.out" 1747241787 1111 66e6df1e02c5ecd81708cfac0fb04200 "pdflatex"
-  "memoria_ejercicio_24.tex" 1747241782 6925 f555808816c92d14a4453262b1d8ad25 ""
-  "memoria_ejercicio_24.toc" 1747241787 642 13a76bcdfe8c77233f5b8044def753d7 "pdflatex"
+  "memoria_ejercicio_24.aux" 1747380695 1465 23b2fa847cd4b7df4cba41a6bb7d5dd9 "pdflatex"
+  "memoria_ejercicio_24.out" 1747380695 1111 66e6df1e02c5ecd81708cfac0fb04200 "pdflatex"
+  "memoria_ejercicio_24.tex" 1747380689 6848 5581f80f0cf5aef5f6c893d28d9c4b6d ""
+  "memoria_ejercicio_24.toc" 1747380695 642 13a76bcdfe8c77233f5b8044def753d7 "pdflatex"
   (generated)
   "memoria_ejercicio_24.aux"
   "memoria_ejercicio_24.log"
